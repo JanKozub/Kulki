@@ -73,6 +73,7 @@ var Game = /** @class */ (function () {
                     document.getElementById(_this.currentField.x + 'x' + _this.currentField.y)
                         .style.backgroundColor = 'red';
                 }
+                var counter = 0;
                 while (num > 0) {
                     for (var i = -1; i <= 1; i++) {
                         for (var k = -1; k <= 1; k++) {
@@ -84,10 +85,15 @@ var Game = /** @class */ (function () {
                                         num = _this.stepArr[a][b];
                                         _this.currentField = { x: a, y: b };
                                         document.getElementById(a + 'x' + b).style.backgroundColor = 'red';
+                                        counter = 0;
                                     }
                                 }
                             }
                         }
+                    }
+                    counter++;
+                    if (counter > 200) {
+                        break;
                     }
                 }
                 _this.lastField = _this.currentField;
@@ -101,19 +107,19 @@ var Game = /** @class */ (function () {
                 for (var b = 0; b < 9; b++) {
                     if (this.stepArr[a][b] == c) {
                         if (a > 0 && this.stepArr[a - 1][b] == -1) {
-                            // document.getElementById((a - 1) + 'x' + b).innerText = (c + 1).toString();
+                            document.getElementById((a - 1) + 'x' + b).innerText = (c + 1).toString();
                             this.stepArr[a - 1][b] = c + 1;
                         }
                         if (b > 0 && this.stepArr[a][b - 1] == -1) {
-                            // document.getElementById((a + 'x' + (b - 1))).innerText = (c + 1).toString();
+                            document.getElementById((a + 'x' + (b - 1))).innerText = (c + 1).toString();
                             this.stepArr[a][b - 1] = c + 1;
                         }
                         if (a < 8 && this.stepArr[a + 1][b] == -1) {
-                            // document.getElementById((a + 1) + 'x' + b).innerText = (c + 1).toString();
+                            document.getElementById((a + 1) + 'x' + b).innerText = (c + 1).toString();
                             this.stepArr[a + 1][b] = c + 1;
                         }
                         if (b < 8 && this.stepArr[a][b + 1] == -1) {
-                            // document.getElementById(a + 'x' + (b + 1)).innerText = (c + 1).toString();
+                            document.getElementById(a + 'x' + (b + 1)).innerText = (c + 1).toString();
                             this.stepArr[a][b + 1] = c + 1;
                         }
                     }
