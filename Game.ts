@@ -1,6 +1,9 @@
 class Game {
     array = [];
+    stepArr = []
     colors = ['white', 'black', 'red', 'yellow', 'orange', 'blue']
+    currentField = {x: -1, y: -1}
+    lastField = {x: 0, y: 0}
 
     constructor() {
         this.initBoard();
@@ -16,6 +19,9 @@ class Game {
                 square.className = 'square'
                 square.style.left = (y * 50) + 'px'
                 square.style.top = (x * 50) + 'px'
+                square.onmouseover = () => {
+                    this.currentField = {x: x, y: y}
+                }
                 document.getElementById('main').append(square)
                 a.push(-1)
             }
@@ -39,39 +45,98 @@ class Game {
     }
 
     onClickBall(x, y) {
-        this.markField(x, y, 0, 'UP')
-        this.markField(x, y, 0, 'DOWN')
-        console.log(x, y)
+        this.clearArray();
+        this.stepArr[x][y] = 0;
+        this.markField()
+
+        document.getElementById('main').onmousemove = () => {
+            if (this.currentField.x !== this.lastField.x || this.currentField.y !== this.lastField.y) {
+                this.clear();
+
+                let num = this.stepArr[this.currentField.x][this.currentField.y];
+
+                if (this.array[this.currentField.x][this.currentField.y] === -1) {
+                    document.getElementById(this.currentField.x + 'x' + this.currentField.y)
+                        .style.backgroundColor = 'red'
+                }
+
+                while (num > 0) {
+                    for (let i = -1; i <= 1; i++) {
+                        for (let k = -1; k <= 1; k++) {
+                            let a = this.currentField.x - i;
+                            let b = this.currentField.y - k;
+
+                            if (a >= 0 && b >= 0 && a <= 8 && b <= 8) {
+                                if ((i == -1 && k == 0) || (i == 1 && k == 0) || (i == 0)) {
+                                    if (this.stepArr[a][b] <= num) {
+                                        num = this.stepArr[a][b];
+                                        this.currentField = {x: a, y: b}
+                                        document.getElementById(a + 'x' + b).style.backgroundColor = 'red'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                this.lastField = this.currentField;
+            }
+        }
     }
 
-    markField(x, y, num, dir) {
-        num = num + 1;
+    markField() {
+        let c = 0;
+        for (let n = 0; n < 16; n++) {
+            for (let a = 0; a < 9; a++) {
+                for (let b = 0; b < 9; b++) {
+                    if (this.stepArr[a][b] == c) {
+                        if (a > 0 && this.stepArr[a - 1][b] == -1) {
+                            // document.getElementById((a - 1) + 'x' + b).innerText = (c + 1).toString();
+                            this.stepArr[a - 1][b] = c + 1;
+                        }
 
-        let x2 = dir === 'UP' ? x - 1 : x + 1;
-        if (x > 0 && x < 8 && this.array[x2][y] === -1) {
-            this.array[x2][y] = num;
-            document.getElementById(x2 + 'x' + y).innerText = num;
-            if (x > 1 && x < 7) {
-                this.markField(x2, y, num, dir)
+                        if (b > 0 && this.stepArr[a][b - 1] == -1) {
+                            // document.getElementById((a + 'x' + (b - 1))).innerText = (c + 1).toString();
+                            this.stepArr[a][b - 1] = c + 1;
+                        }
+
+                        if (a < 8 && this.stepArr[a + 1][b] == -1) {
+                            // document.getElementById((a + 1) + 'x' + b).innerText = (c + 1).toString();
+                            this.stepArr[a + 1][b] = c + 1;
+                        }
+
+                        if (b < 8 && this.stepArr[a][b + 1] == -1) {
+                            // document.getElementById(a + 'x' + (b + 1)).innerText = (c + 1).toString();
+                            this.stepArr[a][b + 1] = c + 1;
+
+                        }
+                    }
+                }
+            }
+            c = c + 1
+        }
+    }
+
+    clearArray() {
+        for (let x = 0; x < 9; x++) {
+            let a = []
+            for (let y = 0; y < 9; y++) {
+                if (this.array[x][y] > -1) {
+                    a.push(100)
+                } else {
+                    a.push(-1)
+                }
+            }
+            this.stepArr.push(a)
+        }
+    }
+
+    clear() {
+        for (let x = 0; x < 9; x++) {
+            for (let y = 0; y < 9; y++) {
+                document.getElementById(x + 'x' + y).style.backgroundColor = 'white'
             }
         }
-
-        if (y > 0 && this.array[x][y - 1] === -1) {
-            this.array[x][y - 1] = num;
-            document.getElementById(x + 'x' + (y - 1)).innerText = num;
-            if (y > 1) {
-                this.markField(x, y - 1, num, dir)
-            }
-        }
-
-        if (y < 9 && this.array[x][y + 1] === -1) {
-            this.array[x][y + 1] = num;
-            document.getElementById(x + 'x' + (y + 1)).innerText = num;
-            if (y < 9) {
-                this.markField(x, y + 1, num, dir)
-            }
-        }
-        return null
     }
 }
 
