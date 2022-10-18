@@ -17,8 +17,8 @@ class Game {
                 let square = document.createElement('div')
                 square.id = x + 'x' + y
                 square.className = 'square'
-                square.style.left = (y * 50) + 'px'
-                square.style.top = (x * 50) + 'px'
+                square.style.left = (y * 52) + 'px'
+                square.style.top = (x * 52) + 'px'
                 square.onmouseover = () => {
                     this.currentField = {x: x, y: y}
                 }
@@ -30,14 +30,24 @@ class Game {
     }
 
     drawBalls() {
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 25; i++) {
             let colorNum = Math.floor(Math.random() * 5)
             let ball = document.createElement('div')
             ball.className = 'ball'
             ball.style.backgroundColor = this.colors[colorNum]
 
-            let x = Math.floor(Math.random() * 8)
-            let y = Math.floor(Math.random() * 8)
+            let swt = true;
+            let x = 0;
+            let y = 0;
+            while(swt) {
+                x = Math.floor(Math.random() * 8)
+                y = Math.floor(Math.random() * 8)
+
+                if (this.array[x][y] == -1) {
+                    swt = false;
+                }
+            }
+
             ball.onclick = () => this.onClickBall(x, y);
             document.getElementById(x + 'x' + y).append(ball)
             this.array[x][y] = colorNum;

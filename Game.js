@@ -16,8 +16,8 @@ var Game = /** @class */ (function () {
                 var square = document.createElement('div');
                 square.id = x + 'x' + y;
                 square.className = 'square';
-                square.style.left = (y * 50) + 'px';
-                square.style.top = (x * 50) + 'px';
+                square.style.left = (y * 52) + 'px';
+                square.style.top = (x * 52) + 'px';
                 square.onmouseover = function () {
                     _this.currentField = { x: x, y: y };
                 };
@@ -41,14 +41,22 @@ var Game = /** @class */ (function () {
             var ball = document.createElement('div');
             ball.className = 'ball';
             ball.style.backgroundColor = this_2.colors[colorNum];
-            var x = Math.floor(Math.random() * 8);
-            var y = Math.floor(Math.random() * 8);
+            var swt = true;
+            var x = 0;
+            var y = 0;
+            while (swt) {
+                x = Math.floor(Math.random() * 8);
+                y = Math.floor(Math.random() * 8);
+                if (this_2.array[x][y] == -1) {
+                    swt = false;
+                }
+            }
             ball.onclick = function () { return _this.onClickBall(x, y); };
             document.getElementById(x + 'x' + y).append(ball);
             this_2.array[x][y] = colorNum;
         };
         var this_2 = this;
-        for (var i = 0; i < 3; i++) {
+        for (var i = 0; i < 25; i++) {
             _loop_3(i);
         }
     };
