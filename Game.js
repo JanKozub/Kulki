@@ -5,59 +5,50 @@ var Game = /** @class */ (function () {
         this.colors = ['white', 'black', 'red', 'yellow', 'orange', 'blue'];
         this.currentField = { x: -1, y: -1 };
         this.lastField = { x: 0, y: 0 };
+        this.locker = false;
         this.initBoard();
         this.drawBalls();
     }
     Game.prototype.initBoard = function () {
-        var _this = this;
-        var _loop_1 = function (x) {
+        for (var x = 0; x < 9; x++) {
             var a = [];
-            var _loop_2 = function (y) {
-                var square = document.createElement('div');
-                square.id = x + 'x' + y;
-                square.className = 'square';
-                square.style.left = (y * 52) + 'px';
-                square.style.top = (x * 52) + 'px';
-                square.onmouseover = function () {
-                    _this.currentField = { x: x, y: y };
-                };
+            for (var y = 0; y < 9; y++) {
+                var square = this.createSquare(x, y);
                 document.getElementById('main').append(square);
                 a.push(-1);
-            };
-            for (var y = 0; y < 9; y++) {
-                _loop_2(y);
             }
-            this_1.array.push(a);
-        };
-        var this_1 = this;
-        for (var x = 0; x < 9; x++) {
-            _loop_1(x);
+            this.array.push(a);
         }
     };
     Game.prototype.drawBalls = function () {
         var _this = this;
-        var _loop_3 = function (i) {
+        var _loop_1 = function (i) {
             var colorNum = Math.floor(Math.random() * 5);
             var ball = document.createElement('div');
             ball.className = 'ball';
-            ball.style.backgroundColor = this_2.colors[colorNum];
+            ball.style.backgroundColor = this_1.colors[colorNum];
             var swt = true;
             var x = 0;
             var y = 0;
             while (swt) {
                 x = Math.floor(Math.random() * 8);
                 y = Math.floor(Math.random() * 8);
-                if (this_2.array[x][y] == -1) {
+                if (this_1.array[x][y] == -1) {
                     swt = false;
                 }
             }
-            ball.onclick = function () { return _this.onClickBall(x, y); };
+            ball.onclick = function () {
+                if (!_this.locker) {
+                    _this.onClickBall(x, y);
+                    _this.locker = true;
+                }
+            };
             document.getElementById(x + 'x' + y).append(ball);
-            this_2.array[x][y] = colorNum;
+            this_1.array[x][y] = colorNum;
         };
-        var this_2 = this;
+        var this_1 = this;
         for (var i = 0; i < 25; i++) {
-            _loop_3(i);
+            _loop_1(i);
         }
     };
     Game.prototype.onClickBall = function (x, y) {
@@ -66,43 +57,42 @@ var Game = /** @class */ (function () {
         this.stepArr[x][y] = 0;
         this.markField();
         document.getElementById('main').onmousemove = function () {
-            if (_this.currentField.x !== _this.lastField.x || _this.currentField.y !== _this.lastField.y) {
-                _this.clear();
+            if (_this.doesFieldChanged()) {
                 var num = _this.stepArr[_this.currentField.x][_this.currentField.y];
-                if (_this.array[_this.currentField.x][_this.currentField.y] === -1) {
-                    document.getElementById(_this.currentField.x + 'x' + _this.currentField.y)
-                        .style.backgroundColor = 'red';
-                }
-                var counter = 0;
-                while (num > 0) {
-                    for (var i = -1; i <= 1; i++) {
-                        for (var k = -1; k <= 1; k++) {
-                            var a = _this.currentField.x - i;
-                            var b = _this.currentField.y - k;
-                            if (a >= 0 && b >= 0 && a <= 8 && b <= 8) {
-                                if ((i == -1 && k == 0) || (i == 1 && k == 0) || (i == 0)) {
-                                    if (_this.stepArr[a][b] <= num) {
-                                        num = _this.stepArr[a][b];
-                                        _this.currentField = { x: a, y: b };
-                                        document.getElementById(a + 'x' + b).style.backgroundColor = 'red';
-                                        counter = 0;
+                if (num !== -1 && num < 90) {
+                    _this.clear();
+                    _this.setFieldRed(_this.currentField.x, _this.currentField.y);
+                    var fields = _this.currentField;
+                    var counter = 0;
+                    while (num > 0) {
+                        for (var i = -1; i <= 1; i++) {
+                            for (var k = -1; k <= 1; k++) {
+                                var a = fields.x - i;
+                                var b = fields.y - k;
+                                if (a >= 0 && b >= 0 && a <= 8 && b <= 8) {
+                                    if ((i == -1 && k == 0) || (i == 1 && k == 0) || (i == 0)) {
+                                        if (_this.stepArr[a][b] <= num) {
+                                            num = _this.stepArr[a][b];
+                                            fields = { x: a, y: b };
+                                            _this.setFieldRed(a, b);
+                                            counter = 0;
+                                        }
                                     }
                                 }
                             }
                         }
+                        counter++;
+                        if (counter > 200)
+                            break;
                     }
-                    counter++;
-                    if (counter > 200) {
-                        break;
-                    }
+                    _this.lastField = _this.currentField;
                 }
-                _this.lastField = _this.currentField;
             }
         };
     };
     Game.prototype.markField = function () {
         var c = 0;
-        for (var n = 0; n < 16; n++) {
+        for (var n = 0; n < 81; n++) {
             for (var a = 0; a < 9; a++) {
                 for (var b = 0; b < 9; b++) {
                     if (this.stepArr[a][b] == c) {
@@ -129,6 +119,7 @@ var Game = /** @class */ (function () {
         }
     };
     Game.prototype.clearArray = function () {
+        this.stepArr = [];
         for (var x = 0; x < 9; x++) {
             var a = [];
             for (var y = 0; y < 9; y++) {
@@ -148,6 +139,32 @@ var Game = /** @class */ (function () {
                 document.getElementById(x + 'x' + y).style.backgroundColor = 'white';
             }
         }
+    };
+    Game.prototype.setFieldRed = function (x, y) {
+        document.getElementById(x + 'x' + y).style.backgroundColor = 'red';
+    };
+    Game.prototype.doesFieldChanged = function () {
+        return this.currentField.x !== this.lastField.x || this.currentField.y !== this.lastField.y;
+    };
+    Game.prototype.createSquare = function (x, y) {
+        var _this = this;
+        var square = document.createElement('div');
+        square.id = x + 'x' + y;
+        square.className = 'square';
+        square.style.left = (y * 52) + 'px';
+        square.style.top = (x * 52) + 'px';
+        square.onmouseover = function () {
+            _this.currentField = { x: x, y: y };
+        };
+        square.onclick = function () {
+            if (_this.locker && _this.array[x][y] == -1) {
+                document.getElementById('main').onmousemove = undefined;
+                _this.clear();
+                _this.lastField = { x: 0, y: 0 };
+                _this.locker = false;
+            }
+        };
+        return square;
     };
     return Game;
 }());
