@@ -12,7 +12,6 @@ var Game = /** @class */ (function () {
         this.mainEl = undefined;
         this.mainEl = document.getElementById('main');
         this.initBoard();
-        this.drawBalls();
         this.drawNextBalls();
     }
     Game.prototype.initBoard = function () {
@@ -25,15 +24,17 @@ var Game = /** @class */ (function () {
             this.array.push(a);
         }
     };
-    Game.prototype.drawBalls = function () {
-        for (var i = 0; i < 25; i++) {
-            var colorNum = this.getRandomColorNum();
-            var nextCords = this.findNextCords();
-            this.addNewBall(colorNum, nextCords.x, nextCords.y);
-            this.array[nextCords.x][nextCords.y] = colorNum;
-        }
-    };
     Game.prototype.drawNextBalls = function () {
+        if (this.nextBalls.length == 0) {
+            for (var i = 0; i < 3; i++) {
+                this.nextBalls.push(this.getRandomColorNum());
+            }
+        }
+        for (var i = 0; i < 3; i++) {
+            var nextCords = this.findNextCords();
+            this.addNewBall(this.nextBalls[i], nextCords.x, nextCords.y);
+            this.array[nextCords.x][nextCords.y] = this.nextBalls[i];
+        }
         this.nextBalls = [];
         var nextBalls = document.getElementById('next-balls');
         nextBalls.innerHTML = '';

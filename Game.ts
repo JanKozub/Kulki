@@ -13,7 +13,6 @@ class Game {
     constructor() {
         this.mainEl = document.getElementById('main');
         this.initBoard();
-        this.drawBalls();
         this.drawNextBalls();
     }
 
@@ -28,17 +27,20 @@ class Game {
         }
     }
 
-    drawBalls() {
-        for (let i = 0; i < 25; i++) {
-            let colorNum = this.getRandomColorNum();
+    drawNextBalls() {
+        if (this.nextBalls.length == 0) {
+            for (let i = 0; i < 3; i++) {
+                this.nextBalls.push(this.getRandomColorNum())
+            }
+        }
+
+        for (let i = 0; i < 3; i++) {
             let nextCords = this.findNextCords();
 
-            this.addNewBall(colorNum, nextCords.x, nextCords.y);
-            this.array[nextCords.x][nextCords.y] = colorNum;
+            this.addNewBall(this.nextBalls[i], nextCords.x, nextCords.y);
+            this.array[nextCords.x][nextCords.y] = this.nextBalls[i];
         }
-    }
 
-    drawNextBalls() {
         this.nextBalls = []
         let nextBalls = document.getElementById('next-balls');
         nextBalls.innerHTML = ''
