@@ -8,7 +8,7 @@ Działanie gry:
  	X - odwrotna sytuacja do powyższej (brak możliwości wybrania takiej kulki) [00:18 - 00:21]
  	X - kliknięcie w inne pole/kulkę podczas trwania "przesuwania" - zblokowane
 3. [0.5p]
-	- preview kolejnych trzech kulek, które zostaną dodane na plansze [cały czas podczas filmu - lewa strona]
+	X - preview kolejnych trzech kulek, które zostaną dodane na plansze [cały czas podczas filmu - lewa strona]
 	- ich dodawanie co ruch (docelowo dodatkowy ruch gdy zbijemy)
 	X - preview trasy kulki przy najechaniu na dostępne pole (do którego może kulka przejść [no. 00:02-00:14])
 		uwaga: [00:16] - może nie podświetlać ścieżki w przypadku jej nieistnienia (u mnie zaznacza ostatnią możliwą)

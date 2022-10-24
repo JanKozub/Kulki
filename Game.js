@@ -6,12 +6,14 @@ var Game = /** @class */ (function () {
         this.currentField = { x: -1, y: -1 };
         this.lastField = { x: 0, y: 0 };
         this.startField = { x: 0, y: 0 };
+        this.nextBalls = [];
         this.locker = false;
         this.noPath = false;
         this.mainEl = undefined;
         this.mainEl = document.getElementById('main');
         this.initBoard();
         this.drawBalls();
+        this.drawNextBalls();
     }
     Game.prototype.initBoard = function () {
         for (var x = 0; x < 9; x++) {
@@ -25,10 +27,25 @@ var Game = /** @class */ (function () {
     };
     Game.prototype.drawBalls = function () {
         for (var i = 0; i < 25; i++) {
-            var colorNum = Math.floor(Math.random() * 5);
+            var colorNum = this.getRandomColorNum();
             var nextCords = this.findNextCords();
             this.addNewBall(colorNum, nextCords.x, nextCords.y);
             this.array[nextCords.x][nextCords.y] = colorNum;
+        }
+    };
+    Game.prototype.drawNextBalls = function () {
+        this.nextBalls = [];
+        var nextBalls = document.getElementById('next-balls');
+        nextBalls.innerHTML = '';
+        for (var i = 0; i < 3; i++) {
+            var colorNum = this.getRandomColorNum();
+            this.nextBalls.push(colorNum);
+            var ball = document.createElement('div');
+            ball.className = 'ball';
+            ball.style.marginLeft = '5px';
+            ball.style.marginRight = '5px';
+            ball.style.backgroundColor = this.colors[colorNum];
+            nextBalls.append(ball);
         }
     };
     Game.prototype.makeRedPath = function () {
@@ -179,6 +196,7 @@ var Game = /** @class */ (function () {
                     setTimeout(function () { return _this.clearRedPath(); }, 1000);
                     _this.lastField = { x: 0, y: 0 };
                     _this.locker = false;
+                    _this.drawNextBalls();
                 }
             }
             else {
@@ -227,6 +245,9 @@ var Game = /** @class */ (function () {
             ball.style.top = '6px';
             ball.style.left = '6px';
         }
+    };
+    Game.prototype.getRandomColorNum = function () {
+        return Math.floor(Math.random() * this.colors.length);
     };
     return Game;
 }());

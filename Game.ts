@@ -5,6 +5,7 @@ class Game {
     private currentField = {x: -1, y: -1};
     private lastField = {x: 0, y: 0};
     private startField = {x: 0, y: 0};
+    private nextBalls = [];
     private locker = false;
     private noPath = false;
     private mainEl = undefined;
@@ -13,6 +14,7 @@ class Game {
         this.mainEl = document.getElementById('main');
         this.initBoard();
         this.drawBalls();
+        this.drawNextBalls();
     }
 
     initBoard() {
@@ -28,11 +30,27 @@ class Game {
 
     drawBalls() {
         for (let i = 0; i < 25; i++) {
-            let colorNum = Math.floor(Math.random() * 5)
+            let colorNum = this.getRandomColorNum();
             let nextCords = this.findNextCords();
 
             this.addNewBall(colorNum, nextCords.x, nextCords.y);
             this.array[nextCords.x][nextCords.y] = colorNum;
+        }
+    }
+
+    drawNextBalls() {
+        this.nextBalls = []
+        let nextBalls = document.getElementById('next-balls');
+        nextBalls.innerHTML = ''
+        for (let i = 0; i < 3; i++) {
+            let colorNum = this.getRandomColorNum()
+            this.nextBalls.push(colorNum)
+            let ball = document.createElement('div')
+            ball.className = 'ball'
+            ball.style.marginLeft = '5px'
+            ball.style.marginRight = '5px'
+            ball.style.backgroundColor = this.colors[colorNum]
+            nextBalls.append(ball)
         }
     }
 
@@ -196,6 +214,8 @@ class Game {
                     setTimeout(() => this.clearRedPath(), 1000)
                     this.lastField = {x: 0, y: 0}
                     this.locker = false;
+
+                    this.drawNextBalls();
                 }
             } else {
                 let targetBall = this.getBallAtCords(x, y);
@@ -247,6 +267,10 @@ class Game {
             ball.style.top = '6px'
             ball.style.left = '6px'
         }
+    }
+
+    getRandomColorNum() {
+        return Math.floor(Math.random() * this.colors.length)
     }
 }
 
