@@ -10,10 +10,10 @@ Działanie gry:
 3. [0.5p]
 	- preview kolejnych trzech kulek, które zostaną dodane na plansze [cały czas podczas filmu - lewa strona]
 	- ich dodawanie co ruch (docelowo dodatkowy ruch gdy zbijemy)
-	- preview trasy kulki przy najechaniu na dostępne pole (do którego może kulka przejść [no. 00:02-00:14])
+	X - preview trasy kulki przy najechaniu na dostępne pole (do którego może kulka przejść [no. 00:02-00:14])
 		uwaga: [00:16] - może nie podświetlać ścieżki w przypadku jej nieistnienia (u mnie zaznacza ostatnią możliwą)
-	- możliwość akceptacji przesunięcia kulki tylko do miejsca dostępnego dla niej
-	- wybór innej kuli / odznaczenie - usunięcie proponowanej ścieżki [00:22-00:27]
+	X - możliwość akceptacji przesunięcia kulki tylko do miejsca dostępnego dla niej
+	X - wybór innej kuli / odznaczenie - usunięcie proponowanej ścieżki [00:22-00:27]
 5. [0.5p]
 	- zbijanie minimum pięciu kul we wszystkich kierunkach
 	- punkty (każda zbita kula - 1p) + zakończenie (np. informacja o uzyskanych punktach/czasie gry itp.)

@@ -42,7 +42,7 @@ class Game {
 
             let num = this.stepArr[this.currentField.x][this.currentField.y];
             if (num !== -1 && num < 90) {
-                this.clear();
+                this.clearRedPath();
                 this.setFieldRed(this.currentField.x, this.currentField.y)
 
                 let fields = this.currentField;
@@ -120,10 +120,21 @@ class Game {
         }
     }
 
-    clear() {
+    clearRedPath() {
         for (let x = 0; x < 9; x++) {
             for (let y = 0; y < 9; y++) {
                 this.getSquareWithCords(x, y).style.backgroundColor = 'white'
+            }
+        }
+    }
+
+    setPathGray() {
+        for (let x = 0; x < 9; x++) {
+            for (let y = 0; y < 9; y++) {
+                let square = this.getSquareWithCords(x, y);
+                if (square.style.backgroundColor == 'red') {
+                    square.style.backgroundColor = 'gray'
+                }
             }
         }
     }
@@ -153,7 +164,7 @@ class Game {
                 if (this.startField.x == x && this.startField.y == y) {
                     this.setBallSize(ball, 'small')
                     this.mainEl.onmousemove = undefined;
-                    this.clear();
+                    this.clearRedPath();
                     this.lastField = {x: 0, y: 0}
                     this.locker = false;
                 }
@@ -180,18 +191,23 @@ class Game {
                     this.getSquareWithCords(this.startField.x, this.startField.y).innerHTML = ''
                     this.addNewBall(this.array[x][y], x, y)
                     this.mainEl.onmousemove = undefined;
-                    this.clear();
+
+                    this.setPathGray();
+                    setTimeout(() => this.clearRedPath(), 1000)
                     this.lastField = {x: 0, y: 0}
                     this.locker = false;
                 }
             } else {
-                this.clear();
-                this.setBallSize(this.getBallAtCords(this.startField.x, this.startField.y), 'small')
-                this.setBallSize(this.getBallAtCords(x, y), 'big')
-                this.lastField = {x: 0, y: 0}
-                this.startField = {x: x, y: y}
-                this.clearArray();
-                this.markField(x, y);
+                let targetBall = this.getBallAtCords(x, y);
+                if (targetBall !== undefined) {
+                    this.clearRedPath();
+                    this.setBallSize(this.getBallAtCords(this.startField.x, this.startField.y), 'small')
+                    this.setBallSize(targetBall, 'big')
+                    this.lastField = {x: 0, y: 0}
+                    this.startField = {x: x, y: y}
+                    this.clearArray();
+                    this.markField(x, y);
+                }
             }
         }
         this.mainEl.append(square)

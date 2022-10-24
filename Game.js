@@ -36,7 +36,7 @@ var Game = /** @class */ (function () {
             this.noPath = false;
             var num = this.stepArr[this.currentField.x][this.currentField.y];
             if (num !== -1 && num < 90) {
-                this.clear();
+                this.clearRedPath();
                 this.setFieldRed(this.currentField.x, this.currentField.y);
                 var fields = this.currentField;
                 while (num > 0) {
@@ -108,10 +108,20 @@ var Game = /** @class */ (function () {
             this.stepArr.push(a);
         }
     };
-    Game.prototype.clear = function () {
+    Game.prototype.clearRedPath = function () {
         for (var x = 0; x < 9; x++) {
             for (var y = 0; y < 9; y++) {
                 this.getSquareWithCords(x, y).style.backgroundColor = 'white';
+            }
+        }
+    };
+    Game.prototype.setPathGray = function () {
+        for (var x = 0; x < 9; x++) {
+            for (var y = 0; y < 9; y++) {
+                var square = this.getSquareWithCords(x, y);
+                if (square.style.backgroundColor == 'red') {
+                    square.style.backgroundColor = 'gray';
+                }
             }
         }
     };
@@ -139,7 +149,7 @@ var Game = /** @class */ (function () {
                 if (_this.startField.x == x && _this.startField.y == y) {
                     _this.setBallSize(ball, 'small');
                     _this.mainEl.onmousemove = undefined;
-                    _this.clear();
+                    _this.clearRedPath();
                     _this.lastField = { x: 0, y: 0 };
                     _this.locker = false;
                 }
@@ -165,19 +175,23 @@ var Game = /** @class */ (function () {
                     _this.getSquareWithCords(_this.startField.x, _this.startField.y).innerHTML = '';
                     _this.addNewBall(_this.array[x][y], x, y);
                     _this.mainEl.onmousemove = undefined;
-                    _this.clear();
+                    _this.setPathGray();
+                    setTimeout(function () { return _this.clearRedPath(); }, 1000);
                     _this.lastField = { x: 0, y: 0 };
                     _this.locker = false;
                 }
             }
             else {
-                _this.clear();
-                _this.setBallSize(_this.getBallAtCords(_this.startField.x, _this.startField.y), 'small');
-                _this.setBallSize(_this.getBallAtCords(x, y), 'big');
-                _this.lastField = { x: 0, y: 0 };
-                _this.startField = { x: x, y: y };
-                _this.clearArray();
-                _this.markField(x, y);
+                var targetBall = _this.getBallAtCords(x, y);
+                if (targetBall !== undefined) {
+                    _this.clearRedPath();
+                    _this.setBallSize(_this.getBallAtCords(_this.startField.x, _this.startField.y), 'small');
+                    _this.setBallSize(targetBall, 'big');
+                    _this.lastField = { x: 0, y: 0 };
+                    _this.startField = { x: x, y: y };
+                    _this.clearArray();
+                    _this.markField(x, y);
+                }
             }
         };
         this.mainEl.append(square);
