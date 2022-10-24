@@ -1,0 +1,38 @@
+Działanie gry:
+2. [1p]
+	X - rozmiar planszy 9x9
+ 	X - baza siedmu kolorów - z niej losujemy (za każdym razem trzy kule) [00:00 - 00:05]
+ 	X - kliknięcie kulki zatwierdza jej wybór, ponowne "odtwierdza" [00:06 - 00:09]
+ 	X - kliknięcie innej kulki (po juz zatwierdzonej) zmienia wybór [00:10 - 00:12]
+	X - przesunięcie kulki z obszaru "otwartego" do "zamkniętego" [00:28 - 00:31]
+ 	X - odwrotna sytuacja do powyższej (brak możliwości wybrania takiej kulki) [00:18 - 00:21]
+ 	X - kliknięcie w inne pole/kulkę podczas trwania "przesuwania" - zblokowane
+3. [0.5p]
+	- preview kolejnych trzech kulek, które zostaną dodane na plansze [cały czas podczas filmu - lewa strona]
+	- ich dodawanie co ruch (docelowo dodatkowy ruch gdy zbijemy)
+	- preview trasy kulki przy najechaniu na dostępne pole (do którego może kulka przejść [no. 00:02-00:14])
+		uwaga: [00:16] - może nie podświetlać ścieżki w przypadku jej nieistnienia (u mnie zaznacza ostatnią możliwą)
+	- możliwość akceptacji przesunięcia kulki tylko do miejsca dostępnego dla niej
+	- wybór innej kuli / odznaczenie - usunięcie proponowanej ścieżki [00:22-00:27]
+5. [0.5p]
+	- zbijanie minimum pięciu kul we wszystkich kierunkach
+	- punkty (każda zbita kula - 1p) + zakończenie (np. informacja o uzyskanych punktach/czasie gry itp.)
+	- pamiętaj by po najechaniu był preview ścieżki + kolorowy ślad (gdy nie masz przemieszczania też dodaj), gdy ślad to zablokuj interakcję
+
+
+Od strony kodu (Typescript):
+1. [1p]
+	X -pisząc w TS zaiplementuj dowolony algortm najkrótszej ścieżki z punktu A do B "na szachownicy".
+		zastosuj: typowania/inferencje (pamiętaj o typach HTML...., unikaj typu any), funkcje/metody, klasa/klasy
+2. [0.5p]
+	- dodaj interfejsy, co najmniej jako implementacja w klasie i dwa innego typu
+	- w klasach stosuj:
+		zasięgi (public/private/protected)
+		modyfikator readonly
+		właściwości/metody statyczne (o ile to możliwe / nie "rozwali" kodu)
+3. [0.5p]
+	- podziel swój projekt na kilka plików (używaj modułów do importu/exportu potrzebnych "danych").
+4. [0.5p]
+	- utwórz dokumentację projektu - opisz swoje struktury kodu (stosuj bloki, @module, @param, @returns, @todo, inne wg. potrzeby)
+5. [0.5p]
+	- dodaj dekoratorem w projekcie dowolną funkcjonalność np. (...)

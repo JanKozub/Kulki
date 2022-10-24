@@ -17,8 +17,8 @@
     width: 36px;
     height: 36px;
     position: relative;
-    top: calc(12px / 2);
-    left: calc(12px / 2);
+    top: 6px;
+    left: 6px;
     border: 1px solid black;
     border-radius: 100%;
     cursor: pointer;

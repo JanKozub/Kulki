@@ -2,12 +2,14 @@ var Game = /** @class */ (function () {
     function Game() {
         this.array = [];
         this.stepArr = [];
-        this.colors = ['white', 'black', 'red', 'yellow', 'orange', 'blue'];
+        this.colors = ['white', 'black', 'red', 'yellow', 'orange', 'blue', 'pink'];
         this.currentField = { x: -1, y: -1 };
         this.lastField = { x: 0, y: 0 };
         this.startField = { x: 0, y: 0 };
         this.locker = false;
         this.noPath = false;
+        this.mainEl = undefined;
+        this.mainEl = document.getElementById('main');
         this.initBoard();
         this.drawBalls();
     }
@@ -29,65 +31,60 @@ var Game = /** @class */ (function () {
             this.array[nextCords.x][nextCords.y] = colorNum;
         }
     };
-    Game.prototype.onClickBall = function (x, y) {
-        var _this = this;
-        this.clearArray();
-        this.stepArr[x][y] = 0;
-        this.markField();
-        document.getElementById('main').onmousemove = function () {
-            if (_this.doesFieldChanged()) {
-                _this.noPath = false;
-                var num = _this.stepArr[_this.currentField.x][_this.currentField.y];
-                if (num !== -1 && num < 90) {
-                    _this.clear();
-                    _this.setFieldRed(_this.currentField.x, _this.currentField.y);
-                    var fields = _this.currentField;
-                    while (num > 0) {
-                        for (var i = -1; i <= 1; i++) {
-                            for (var k = -1; k <= 1; k++) {
-                                var a = fields.x - i;
-                                var b = fields.y - k;
-                                if (a >= 0 && b >= 0 && a <= 8 && b <= 8) {
-                                    if ((i == -1 && k == 0) || (i == 1 && k == 0) || (i == 0)) {
-                                        if (_this.stepArr[a][b] <= num) {
-                                            num = _this.stepArr[a][b];
-                                            fields = { x: a, y: b };
-                                            _this.setFieldRed(a, b);
-                                            _this.noPath = false;
-                                        }
+    Game.prototype.makeRedPath = function () {
+        if (this.doesFieldChanged()) {
+            this.noPath = false;
+            var num = this.stepArr[this.currentField.x][this.currentField.y];
+            if (num !== -1 && num < 90) {
+                this.clear();
+                this.setFieldRed(this.currentField.x, this.currentField.y);
+                var fields = this.currentField;
+                while (num > 0) {
+                    for (var i = -1; i <= 1; i++) {
+                        for (var k = -1; k <= 1; k++) {
+                            var a = fields.x - i;
+                            var b = fields.y - k;
+                            if (a >= 0 && b >= 0 && a <= 8 && b <= 8) {
+                                if ((i == -1 && k == 0) || (i == 1 && k == 0) || (i == 0)) {
+                                    if (this.stepArr[a][b] <= num) {
+                                        num = this.stepArr[a][b];
+                                        fields = { x: a, y: b };
+                                        this.setFieldRed(a, b);
+                                        this.noPath = false;
                                     }
                                 }
                             }
                         }
                     }
-                    _this.lastField = _this.currentField;
                 }
-                else {
-                    _this.noPath = true;
-                }
+                this.lastField = this.currentField;
             }
-        };
+            else {
+                this.noPath = true;
+            }
+        }
     };
-    Game.prototype.markField = function () {
+    Game.prototype.markField = function (x, y) {
+        this.stepArr[x][y] = 0;
         var c = 0;
         for (var n = 0; n < 81; n++) {
             for (var a = 0; a < 9; a++) {
                 for (var b = 0; b < 9; b++) {
                     if (this.stepArr[a][b] == c) {
                         if (a > 0 && this.stepArr[a - 1][b] == -1) {
-                            // document.getElementById((a - 1) + 'x' + b).innerText = (c + 1).toString();
+                            // this.getSquareWithCords(a - 1, b).innerText = (c + 1).toString();
                             this.stepArr[a - 1][b] = c + 1;
                         }
                         if (b > 0 && this.stepArr[a][b - 1] == -1) {
-                            // document.getElementById((a + 'x' + (b - 1))).innerText = (c + 1).toString();
+                            // this.getSquareWithCords(a, b - 1).innerText = (c + 1).toString();
                             this.stepArr[a][b - 1] = c + 1;
                         }
                         if (a < 8 && this.stepArr[a + 1][b] == -1) {
-                            // document.getElementById((a + 1) + 'x' + b).innerText = (c + 1).toString();
+                            // this.getSquareWithCords(a + 1, b).innerText = (c + 1).toString();
                             this.stepArr[a + 1][b] = c + 1;
                         }
                         if (b < 8 && this.stepArr[a][b + 1] == -1) {
-                            // document.getElementById(a + 'x' + (b + 1)).innerText = (c + 1).toString();
+                            // this.getSquareWithCords(a, b + 1).innerText = (c + 1).toString();
                             this.stepArr[a][b + 1] = c + 1;
                         }
                     }
@@ -114,15 +111,15 @@ var Game = /** @class */ (function () {
     Game.prototype.clear = function () {
         for (var x = 0; x < 9; x++) {
             for (var y = 0; y < 9; y++) {
-                document.getElementById(x + 'x' + y).style.backgroundColor = 'white';
+                this.getSquareWithCords(x, y).style.backgroundColor = 'white';
             }
         }
     };
     Game.prototype.setFieldRed = function (x, y) {
-        document.getElementById(x + 'x' + y).style.backgroundColor = 'red';
+        this.getSquareWithCords(x, y).style.backgroundColor = 'red';
     };
     Game.prototype.doesFieldChanged = function () {
-        return this.currentField.x !== this.lastField.x || this.currentField.y !== this.lastField.y;
+        return (this.currentField.x != this.lastField.x || this.currentField.y != this.lastField.y);
     };
     Game.prototype.addNewBall = function (colorNum, x, y) {
         var _this = this;
@@ -132,12 +129,25 @@ var Game = /** @class */ (function () {
         ball.onclick = function () {
             if (!_this.locker) {
                 _this.startField = { x: x, y: y };
-                _this.onClickBall(x, y);
+                _this.setBallSize(ball, 'big');
+                _this.clearArray();
+                _this.markField(x, y);
+                _this.mainEl.onmousemove = function () { return _this.makeRedPath(); };
                 _this.locker = true;
             }
+            else {
+                if (_this.startField.x == x && _this.startField.y == y) {
+                    _this.setBallSize(ball, 'small');
+                    _this.mainEl.onmousemove = undefined;
+                    _this.clear();
+                    _this.lastField = { x: 0, y: 0 };
+                    _this.locker = false;
+                }
+            }
         };
-        document.getElementById(x + 'x' + y).innerHTML = '';
-        document.getElementById(x + 'x' + y).append(ball);
+        var square = this.getSquareWithCords(x, y);
+        square.innerHTML = '';
+        square.append(ball);
     };
     Game.prototype.createSquare = function (x, y) {
         var _this = this;
@@ -146,24 +156,31 @@ var Game = /** @class */ (function () {
         square.className = 'square';
         square.style.left = (y * 52) + 'px';
         square.style.top = (x * 52) + 'px';
-        square.onmouseover = function () {
-            _this.currentField = { x: x, y: y };
-        };
+        square.onmouseover = function () { return _this.currentField = { x: x, y: y }; };
         square.onclick = function () {
             if (!_this.noPath) {
                 if (_this.locker && _this.array[x][y] == -1) {
                     _this.array[x][y] = _this.array[_this.startField.x][_this.startField.y];
                     _this.array[_this.startField.x][_this.startField.y] = -1;
-                    document.getElementById(_this.startField.x + 'x' + _this.startField.y).innerHTML = '';
+                    _this.getSquareWithCords(_this.startField.x, _this.startField.y).innerHTML = '';
                     _this.addNewBall(_this.array[x][y], x, y);
-                    document.getElementById('main').onmousemove = undefined;
+                    _this.mainEl.onmousemove = undefined;
                     _this.clear();
                     _this.lastField = { x: 0, y: 0 };
                     _this.locker = false;
                 }
             }
+            else {
+                _this.clear();
+                _this.setBallSize(_this.getBallAtCords(_this.startField.x, _this.startField.y), 'small');
+                _this.setBallSize(_this.getBallAtCords(x, y), 'big');
+                _this.lastField = { x: 0, y: 0 };
+                _this.startField = { x: x, y: y };
+                _this.clearArray();
+                _this.markField(x, y);
+            }
         };
-        document.getElementById('main').append(square);
+        this.mainEl.append(square);
     };
     Game.prototype.findNextCords = function () {
         var x = 0;
@@ -175,6 +192,27 @@ var Game = /** @class */ (function () {
                 break;
         }
         return { x: x, y: y };
+    };
+    Game.prototype.getSquareWithCords = function (x, y) {
+        return document.getElementById(x + 'x' + y);
+    };
+    Game.prototype.getBallAtCords = function (x, y) {
+        return this.getSquareWithCords(x, y)
+            .getElementsByClassName('ball')[0];
+    };
+    Game.prototype.setBallSize = function (ball, size) {
+        if (size == 'big') {
+            ball.style.width = '46px';
+            ball.style.height = '46px';
+            ball.style.top = '1px';
+            ball.style.left = '1px';
+        }
+        else if (size == 'small') {
+            ball.style.width = '36px';
+            ball.style.height = '36px';
+            ball.style.top = '6px';
+            ball.style.left = '6px';
+        }
     };
     return Game;
 }());
