@@ -9,6 +9,7 @@ class Game {
     private locker = false;
     private noPath = false;
     private mainEl = undefined;
+    private minStrikeSize = 5
 
     constructor() {
         this.mainEl = document.getElementById('main');
@@ -207,19 +208,21 @@ class Game {
             if (!this.noPath) {
                 if (this.locker && this.array[x][y] == -1) {
                     this.array[x][y] = this.array[this.startField.x][this.startField.y]
-                    this.array[this.startField.x][this.startField.y] = -1;
-                    this.getSquareWithCords(this.startField.x, this.startField.y).innerHTML = ''
-                    this.addNewBall(this.array[x][y], x, y)
+                    this.removeBallAtCords(this.startField.x, this.startField.y);
+                    this.addNewBall(this.array[x][y], x, y);
                     this.mainEl.onmousemove = undefined;
+                    this.lastField = {x: 0, y: 0}
 
                     this.setPathGray();
-                    setTimeout(() => this.clearRedPath(), 1000)
-                    this.lastField = {x: 0, y: 0}
-                    this.locker = false;
-
-                    this.drawNextBalls();
+                    setTimeout(() => {
+                        this.strikeBalls(x, y)
+                        this.clearRedPath()
+                        this.drawNextBalls();
+                        this.locker = false;
+                    }, 5000)
                 }
             } else {
+                console.log('chuj')
                 let targetBall = this.getBallAtCords(x, y);
                 if (targetBall !== undefined) {
                     this.clearRedPath();
@@ -257,6 +260,11 @@ class Game {
             .getElementsByClassName('ball')[0]
     }
 
+    removeBallAtCords(x, y) {
+        this.array[x][y] = -1;
+        this.getSquareWithCords(x, y).innerHTML = ''
+    }
+
     setBallSize(ball, size) {
         if (size == 'big') {
             ball.style.width = '46px'
@@ -273,6 +281,145 @@ class Game {
 
     getRandomColorNum() {
         return Math.floor(Math.random() * this.colors.length)
+    }
+
+    addPoints(points) {
+        let pointsEl = document.getElementById('points');
+        pointsEl.innerText = parseInt(pointsEl.innerText) + points
+    }
+
+    strikeBalls(x, y) {
+        let color = this.array[x][y]
+        let result = []
+        result = result.concat(this.checkVertical(x, y, color));
+        result = result.concat(this.checkHorizontal(x, y, color));
+        result = result.concat(this.checkDiagonal1(x, y, color));
+        result = result.concat(this.checkDiagonal2(x, y, color));
+
+        if (result.length > 0) {
+            result.push({x: x, y: y})
+        }
+
+        this.addPoints(result.length)
+        result.forEach((e) => {
+            this.removeBallAtCords(e.x, e.y)
+        })
+    }
+
+    checkVertical(x, y, color) {
+        let result = [];
+        let x2 = x - 1;
+        while (x2 >= 0) {
+            if (this.array[x2][y] == color) {
+                result.push({x: x2, y: y});
+            } else {
+                break;
+            }
+            x2--;
+        }
+        x2 = x + 1;
+        while (x2 < 9) {
+            if (this.array[x2][y] == color) {
+                result.push({x: x2, y: y});
+            } else {
+                break;
+            }
+            x2++;
+        }
+
+        if (result.length < this.minStrikeSize - 1) {
+            result = []
+        }
+        return result
+    }
+
+    checkHorizontal(x, y, color) {
+        let result = [];
+        let y2 = y - 1;
+        while (y2 >= 0) {
+            if (this.array[x][y2] == color) {
+                result.push({x: x, y: y2});
+            } else {
+                break;
+            }
+            y2--;
+        }
+        y2 = y + 1;
+        while (y2 < 9) {
+            if (this.array[x][y2] == color) {
+                result.push({x: x, y: y2});
+            } else {
+                break;
+            }
+            y2++;
+        }
+        if (result.length < this.minStrikeSize - 1) {
+            result = []
+        }
+        return result
+    }
+
+    checkDiagonal1(x, y, color) {
+        let result = [];
+        let x2 = x - 1;
+        let y2 = y - 1;
+        while (x2 >= 0 && y2 >= 0) {
+            if (this.array[x2][y2] == color) {
+                result.push({x: x2, y: y2});
+            } else {
+                break;
+            }
+            x2--;
+            y2--;
+        }
+        x2 = x + 1;
+        y2 = y + 1;
+        while (x2 < 9 && y2 < 9) {
+            if (this.array[x2][y2] == color) {
+                result.push({x: x2, y: y2});
+            } else {
+                break;
+            }
+            x2++;
+            y2++;
+        }
+
+        if (result.length < this.minStrikeSize - 1) {
+            result = []
+        }
+        return result
+    }
+
+    checkDiagonal2(x, y, color) {
+        let result = [];
+        let x2 = x - 1;
+        let y2 = y + 1;
+        while (x2 >= 0 && y2 < 9) {
+            if (this.array[x2][y2] == color) {
+                result.push({x: x2, y: y2});
+            } else {
+                break;
+            }
+            x2--;
+            y2++;
+        }
+
+        x2 = x + 1;
+        y2 = y - 1;
+        while (x2 < 9 && y2 >= 0) {
+            if (this.array[x2][y2] == color) {
+                result.push({x: x2, y: y2});
+            } else {
+                break;
+            }
+            x2++;
+            y2--;
+        }
+
+        if (result.length < this.minStrikeSize - 1) {
+            result = []
+        }
+        return result
     }
 }
 

@@ -10,6 +10,7 @@ var Game = /** @class */ (function () {
         this.locker = false;
         this.noPath = false;
         this.mainEl = undefined;
+        this.minStrikeSize = 5;
         this.mainEl = document.getElementById('main');
         this.initBoard();
         this.drawNextBalls();
@@ -189,18 +190,21 @@ var Game = /** @class */ (function () {
             if (!_this.noPath) {
                 if (_this.locker && _this.array[x][y] == -1) {
                     _this.array[x][y] = _this.array[_this.startField.x][_this.startField.y];
-                    _this.array[_this.startField.x][_this.startField.y] = -1;
-                    _this.getSquareWithCords(_this.startField.x, _this.startField.y).innerHTML = '';
+                    _this.removeBallAtCords(_this.startField.x, _this.startField.y);
                     _this.addNewBall(_this.array[x][y], x, y);
                     _this.mainEl.onmousemove = undefined;
-                    _this.setPathGray();
-                    setTimeout(function () { return _this.clearRedPath(); }, 1000);
                     _this.lastField = { x: 0, y: 0 };
-                    _this.locker = false;
-                    _this.drawNextBalls();
+                    _this.setPathGray();
+                    setTimeout(function () {
+                        _this.strikeBalls(x, y);
+                        _this.clearRedPath();
+                        _this.drawNextBalls();
+                        _this.locker = false;
+                    }, 5000);
                 }
             }
             else {
+                console.log('chuj');
                 var targetBall = _this.getBallAtCords(x, y);
                 if (targetBall !== undefined) {
                     _this.clearRedPath();
@@ -233,6 +237,10 @@ var Game = /** @class */ (function () {
         return this.getSquareWithCords(x, y)
             .getElementsByClassName('ball')[0];
     };
+    Game.prototype.removeBallAtCords = function (x, y) {
+        this.array[x][y] = -1;
+        this.getSquareWithCords(x, y).innerHTML = '';
+    };
     Game.prototype.setBallSize = function (ball, size) {
         if (size == 'big') {
             ball.style.width = '46px';
@@ -249,6 +257,142 @@ var Game = /** @class */ (function () {
     };
     Game.prototype.getRandomColorNum = function () {
         return Math.floor(Math.random() * this.colors.length);
+    };
+    Game.prototype.addPoints = function (points) {
+        var pointsEl = document.getElementById('points');
+        pointsEl.innerText = parseInt(pointsEl.innerText) + points;
+    };
+    Game.prototype.strikeBalls = function (x, y) {
+        var _this = this;
+        var color = this.array[x][y];
+        var result = [];
+        result = result.concat(this.checkVertical(x, y, color));
+        result = result.concat(this.checkHorizontal(x, y, color));
+        result = result.concat(this.checkDiagonal1(x, y, color));
+        result = result.concat(this.checkDiagonal2(x, y, color));
+        if (result.length > 0) {
+            result.push({ x: x, y: y });
+        }
+        this.addPoints(result.length);
+        result.forEach(function (e) {
+            _this.removeBallAtCords(e.x, e.y);
+        });
+    };
+    Game.prototype.checkVertical = function (x, y, color) {
+        var result = [];
+        var x2 = x - 1;
+        while (x2 >= 0) {
+            if (this.array[x2][y] == color) {
+                result.push({ x: x2, y: y });
+            }
+            else {
+                break;
+            }
+            x2--;
+        }
+        x2 = x + 1;
+        while (x2 < 9) {
+            if (this.array[x2][y] == color) {
+                result.push({ x: x2, y: y });
+            }
+            else {
+                break;
+            }
+            x2++;
+        }
+        if (result.length < this.minStrikeSize - 1) {
+            result = [];
+        }
+        return result;
+    };
+    Game.prototype.checkHorizontal = function (x, y, color) {
+        var result = [];
+        var y2 = y - 1;
+        while (y2 >= 0) {
+            if (this.array[x][y2] == color) {
+                result.push({ x: x, y: y2 });
+            }
+            else {
+                break;
+            }
+            y2--;
+        }
+        y2 = y + 1;
+        while (y2 < 9) {
+            if (this.array[x][y2] == color) {
+                result.push({ x: x, y: y2 });
+            }
+            else {
+                break;
+            }
+            y2++;
+        }
+        if (result.length < this.minStrikeSize - 1) {
+            result = [];
+        }
+        return result;
+    };
+    Game.prototype.checkDiagonal1 = function (x, y, color) {
+        var result = [];
+        var x2 = x - 1;
+        var y2 = y - 1;
+        while (x2 >= 0 && y2 >= 0) {
+            if (this.array[x2][y2] == color) {
+                result.push({ x: x2, y: y2 });
+            }
+            else {
+                break;
+            }
+            x2--;
+            y2--;
+        }
+        x2 = x + 1;
+        y2 = y + 1;
+        while (x2 < 9 && y2 < 9) {
+            if (this.array[x2][y2] == color) {
+                result.push({ x: x2, y: y2 });
+            }
+            else {
+                break;
+            }
+            x2++;
+            y2++;
+        }
+        if (result.length < this.minStrikeSize - 1) {
+            result = [];
+        }
+        return result;
+    };
+    Game.prototype.checkDiagonal2 = function (x, y, color) {
+        var result = [];
+        var x2 = x - 1;
+        var y2 = y + 1;
+        while (x2 >= 0 && y2 < 9) {
+            if (this.array[x2][y2] == color) {
+                result.push({ x: x2, y: y2 });
+            }
+            else {
+                break;
+            }
+            x2--;
+            y2++;
+        }
+        x2 = x + 1;
+        y2 = y - 1;
+        while (x2 < 9 && y2 >= 0) {
+            if (this.array[x2][y2] == color) {
+                result.push({ x: x2, y: y2 });
+            }
+            else {
+                break;
+            }
+            x2++;
+            y2--;
+        }
+        if (result.length < this.minStrikeSize - 1) {
+            result = [];
+        }
+        return result;
     };
     return Game;
 }());
