@@ -8,6 +8,7 @@ class Game {
     private nextBalls = [];
     private locker = false;
     private noPath = false;
+    private coolDown = false;
     private mainEl = undefined;
     private minStrikeSize = 5
 
@@ -206,23 +207,26 @@ class Game {
 
         square.onclick = () => {
             if (!this.noPath) {
-                if (this.locker && this.array[x][y] == -1) {
+                console.log('chuj2')
+                if (this.locker && this.array[x][y] == -1 && !this.coolDown) {
+                    console.log('chuj69')
                     this.array[x][y] = this.array[this.startField.x][this.startField.y]
                     this.removeBallAtCords(this.startField.x, this.startField.y);
                     this.addNewBall(this.array[x][y], x, y);
                     this.mainEl.onmousemove = undefined;
                     this.lastField = {x: 0, y: 0}
 
+                    this.coolDown = true;
                     this.setPathGray();
                     setTimeout(() => {
                         this.strikeBalls(x, y)
                         this.clearRedPath()
                         this.drawNextBalls();
                         this.locker = false;
-                    }, 5000)
+                        this.coolDown = false;
+                    }, 1000)
                 }
             } else {
-                console.log('chuj')
                 let targetBall = this.getBallAtCords(x, y);
                 if (targetBall !== undefined) {
                     this.clearRedPath();

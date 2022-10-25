@@ -9,6 +9,7 @@ var Game = /** @class */ (function () {
         this.nextBalls = [];
         this.locker = false;
         this.noPath = false;
+        this.coolDown = false;
         this.mainEl = undefined;
         this.minStrikeSize = 5;
         this.mainEl = document.getElementById('main');
@@ -188,23 +189,26 @@ var Game = /** @class */ (function () {
         square.onmouseover = function () { return _this.currentField = { x: x, y: y }; };
         square.onclick = function () {
             if (!_this.noPath) {
-                if (_this.locker && _this.array[x][y] == -1) {
+                console.log('chuj2');
+                if (_this.locker && _this.array[x][y] == -1 && !_this.coolDown) {
+                    console.log('chuj69');
                     _this.array[x][y] = _this.array[_this.startField.x][_this.startField.y];
                     _this.removeBallAtCords(_this.startField.x, _this.startField.y);
                     _this.addNewBall(_this.array[x][y], x, y);
                     _this.mainEl.onmousemove = undefined;
                     _this.lastField = { x: 0, y: 0 };
+                    _this.coolDown = true;
                     _this.setPathGray();
                     setTimeout(function () {
                         _this.strikeBalls(x, y);
                         _this.clearRedPath();
                         _this.drawNextBalls();
                         _this.locker = false;
-                    }, 5000);
+                        _this.coolDown = false;
+                    }, 1000);
                 }
             }
             else {
-                console.log('chuj');
                 var targetBall = _this.getBallAtCords(x, y);
                 if (targetBall !== undefined) {
                     _this.clearRedPath();

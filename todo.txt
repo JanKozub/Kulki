@@ -1,7 +1,3 @@
-5. [0.5p]
-	- zbijanie minimum pięciu kul we wszystkich kierunkach
-	- punkty (każda zbita kula - 1p) + zakończenie (np. informacja o uzyskanych punktach/czasie gry itp.)
-	- pamiętaj by po najechaniu był preview ścieżki + kolorowy ślad (gdy nie masz przemieszczania też dodaj), gdy ślad to zablokuj interakcję
 2. [0.5p]
 	- dodaj interfejsy, co najmniej jako implementacja w klasie i dwa innego typu
 	- w klasach stosuj:
@@ -14,3 +10,8 @@
 	- utwórz dokumentację projektu - opisz swoje struktury kodu (stosuj bloki, @module, @param, @returns, @todo, inne wg. potrzeby)
 5. [0.5p]
 	- dodaj dekoratorem w projekcie dowolną funkcjonalność np. (...)
+
+
+- Dodatkowy ruch po zbiciu
+- Brak mozliwosci zaznaczenia gdy jest zablokowana
+- zaokraglenie losowania
