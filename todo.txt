@@ -5,5 +5,4 @@
 
 
 - Dodatkowy ruch po zbiciu
-- zaokraglenie losowania
 - Dodaj zakonczenie gry
