@@ -1,11 +1,3 @@
-2. [0.5p]
-	- dodaj interfejsy, co najmniej jako implementacja w klasie i dwa innego typu
-	- w klasach stosuj:
-		zasięgi (public/private/protected)
-		modyfikator readonly
-		właściwości/metody statyczne (o ile to możliwe / nie "rozwali" kodu)
-3. [0.5p]
-	- podziel swój projekt na kilka plików (używaj modułów do importu/exportu potrzebnych "danych").
 4. [0.5p]
 	- utwórz dokumentację projektu - opisz swoje struktury kodu (stosuj bloki, @module, @param, @returns, @todo, inne wg. potrzeby)
 5. [0.5p]
@@ -13,5 +5,5 @@
 
 
 - Dodatkowy ruch po zbiciu
-- Brak mozliwosci zaznaczenia gdy jest zablokowana
 - zaokraglenie losowania
+- Dodaj zakonczenie gry
