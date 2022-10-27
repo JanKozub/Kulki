@@ -7,7 +7,7 @@ export default class Utils {
     }
 
     public static getRandomColorNum(): number {
-        return Math.round(Math.random() * 7)
+        return Math.round(Math.random() * 6)
     }
 
     public static setBallSize(ball: HTMLElement, size: string): void {
