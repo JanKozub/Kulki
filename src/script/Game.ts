@@ -175,9 +175,11 @@ class Game {
                     this.coolDown = true;
                     Board.setPathGray();
                     setTimeout(() => {
-                        this.striker.strikeBalls(x, y, this.array)
+                        if (this.striker.strikeBalls(x, y, this.array) == 0) {
+                            this.drawNextBalls();
+                        }
+
                         Board.clearPath()
-                        this.drawNextBalls();
                         this.locker = false;
                         this.coolDown = false;
                     }, 1000)

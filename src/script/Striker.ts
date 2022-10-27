@@ -6,7 +6,7 @@ import Color from "./Color";
 export default class Striker {
     private readonly minStrikeSize = 5;
 
-    public strikeBalls(x: number, y: number, array: number[][]): void {
+    public strikeBalls(x: number, y: number, array: number[][]): number {
         let color = {index: array[x][y]}
         let result: Cords[] = []
         result = result.concat(this.checkVertical(x, y, color, array));
@@ -22,6 +22,7 @@ export default class Striker {
         result.forEach((o) => {
             array = Board.removeBallFromArray(o.x, o.y, array)
         })
+        return result.length;
     }
 
     private checkVertical(x: number, y: number, color: Color, array: number[][]): Cords[] {
