@@ -1,5 +1,5 @@
 import Cords from "./Cords";
-import Utils from "./Utils";
+import {Utils} from "./Utils";
 import Board from "./Board";
 import Color from "./Color";
 
