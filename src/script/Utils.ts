@@ -33,15 +33,35 @@ export default class Utils {
     }
 
     public static findFreeCords(array: number[][]): Cords {
-        let x = 0;
-        let y = 0;
-        while (true) {
-            x = Math.round(Math.random() * 8)
-            y = Math.round(Math.random() * 8)
+        let x = -1;
+        let y = -1;
+        if (!this.isArrayFull(array)) {
+            while (true) {
+                x = Math.round(Math.random() * 8)
+                y = Math.round(Math.random() * 8)
 
-            if (array[x][y] == -1)
-                break;
+                if (array[x][y] == -1)
+                    break;
+            }
+        } else {
+            this.FinishGame();
         }
         return {x: x, y: y}
+    }
+
+    private static isArrayFull(array: number[][]): boolean {
+        let counter = 0;
+        for (let i = 0; i < 9; i++) {
+            for (let k = 0; k < 9; k++) {
+                if (array[i][k] == -1) {
+                    counter++;
+                }
+            }
+        }
+        return counter == 1;
+    }
+
+    private static FinishGame(): void {
+        document.body.innerHTML = `<p>Przegrales! Zdobyłeś ${document.getElementById('points').innerHTML} punktów!</p>`
     }
 }
