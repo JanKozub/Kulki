@@ -1,6 +1,6 @@
 import {Cords} from "./interfaces/Cords";
 import {Utils} from "./Utils";
-import Board from "./Board";
+import {Board} from "./Board";
 import {Color} from "./interfaces/Color";
 
 /**

@@ -32,7 +32,7 @@ X/2. [0.5p]
 		właściwości/metody statyczne (o ile to możliwe / nie "rozwali" kodu)
 X/3. [0.5p]
 	X - podziel swój projekt na kilka plików (używaj modułów do importu/exportu potrzebnych "danych").
-4. [0.5p]
-	- utwórz dokumentację projektu - opisz swoje struktury kodu (stosuj bloki, @module, @param, @returns, @todo, inne wg. potrzeby)
+X/4. [0.5p]
+	X - utwórz dokumentację projektu - opisz swoje struktury kodu (stosuj bloki, @module, @param, @returns, @todo, inne wg. potrzeby)
 5. [0.5p]
 	- dodaj dekoratorem w projekcie dowolną funkcjonalność np. (...)

@@ -1,5 +1,5 @@
 import {Utils} from './Utils';
-import Board from "./Board";
+import {Board} from "./Board";
 import {Striker} from "./Striker";
 import {Cords} from "./interfaces/Cords";
 
