@@ -6,9 +6,15 @@ import {Color} from "./interfaces/Color";
 /**
  * Class witch contains only static methods for basic calculations or simple static elements update/replacement.
  */
-export default class Striker {
+export class Striker {
     private readonly minStrikeSize = 5;
 
+    /**
+     * Checks if ball at given coordinates has any points to score
+     * @param x start x coordinate
+     * @param y start y coordinate
+     * @param array array of balls on board
+     */
     public strikeBalls(x: number, y: number, array: number[][]): number {
         let color = {index: array[x][y]}
         let result: Cords[] = []
@@ -28,6 +34,13 @@ export default class Striker {
         return result.length;
     }
 
+    /**
+     * Checks for strike in vertical direction
+     * @param x start x coordinate
+     * @param y start y coordinate
+     * @param color index of color
+     * @param array of balls on the board
+     */
     private checkVertical(x: number, y: number, color: Color, array: number[][]): Cords[] {
         let result = [];
         let x2 = x - 1;
@@ -55,6 +68,13 @@ export default class Striker {
         return result
     }
 
+    /**
+     * Checks for strike in horizontal direction
+     * @param x start x coordinate
+     * @param y start y coordinate
+     * @param color index of color
+     * @param array of balls on the board
+     */
     private checkHorizontal(x: number, y: number, color: Color, array: number[][]): Cords[] {
         let result = [];
         let y2 = y - 1;
@@ -81,6 +101,13 @@ export default class Striker {
         return result
     }
 
+    /**
+     * Checks for strike in 1st diagonal direction
+     * @param x start x coordinate
+     * @param y start y coordinate
+     * @param color index of color
+     * @param array of balls on the board
+     */
     private checkDiagonal1(x: number, y: number, color: Color, array: number[][]): Cords[] {
         let result = [];
         let x2 = x - 1;
@@ -112,6 +139,13 @@ export default class Striker {
         return result
     }
 
+    /**
+     * Checks for strike in 2nd diagonal direction
+     * @param x start x coordinate
+     * @param y start y coordinate
+     * @param color index of color
+     * @param array of balls on the board
+     */
     private checkDiagonal2(x: number, y: number, color: Color, array: number[][]): Cords[] {
         let result = [];
         let x2 = x - 1;
