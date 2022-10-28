@@ -86,4 +86,14 @@ export default class Board {
         this.getSquareWithCords(x, y).innerHTML = ''
         return array;
     }
+
+    /**
+     * checks if ball is blocked by other balls
+     **/
+    public static isBallNotBlocked(x: number, y: number, array: number[][]): boolean {
+        return (x > 0 && array[x - 1][y] == -1) ||
+            (x < 8 && array[x + 1][y] == -1) ||
+            (y > 0 && array[x][y - 1] == -1) ||
+            (y < 8 && array[x][y + 1] == -1);
+    }
 }

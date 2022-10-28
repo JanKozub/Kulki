@@ -3,18 +3,33 @@ import Board from "./Board";
 import {Striker} from "./Striker";
 import {Cords} from "./interfaces/Cords";
 
-class Game {
+/**
+ * Main file of the project. Assembles all elements of the game
+ */
+export class Game {
+    /** array of ball positions on the board */
     private array: number[][] = [];
+    /** array of available colors */
     private readonly colors = ['white', 'black', 'red', 'yellow', 'orange', 'blue', 'pink'];
+    /** cords of current mouse position on the board */
     private currentField: Cords = {x: -1, y: -1};
+    /** cords of field that was previously selected */
     private lastField: Cords = {x: 0, y: 0};
+    /** cords of field that the red mark started from */
     private startField: Cords = {x: 0, y: 0};
+    /** array of balls that will be added on next move */
     private nextBalls: number[] = [];
+    /** locks mouse left button for time of coolDown */
     private locker = false;
+    /** current status of available route to destination */
     private noPath = false;
+    /** locks game for the time of coolDown */
     private coolDown = false;
+    /** main board HTML element */
     private readonly mainEl: HTMLElement = undefined;
+    /** striker class */
     private readonly striker: Striker;
+    /** board class */
     private readonly board: Board;
 
     constructor() {
@@ -27,6 +42,9 @@ class Game {
         this.drawNextBalls();
     }
 
+    /**
+     * Creates board in HTML and initiates the array variable
+     **/
     private initBoard(): void {
         for (let x = 0; x < 9; x++) {
             let a = []
@@ -38,6 +56,9 @@ class Game {
         }
     }
 
+    /**
+     * adds balls to the board and draws three next balls
+     **/
     private drawNextBalls(): void {
         for (let i = 0; i < 3; i++) {
             let nextCords = Utils.findFreeCords(this.array);
@@ -61,6 +82,9 @@ class Game {
         }
     }
 
+    /**
+     * makes red path of the fastest way to the target
+     **/
     private makeRedPath(): void {
         this.noPath = false;
 
@@ -95,13 +119,16 @@ class Game {
         }
     }
 
+    /**
+     * creates HTML ball element with all necessary mouse events
+     **/
     private createBall(colorNum: number, x: number, y: number): void {
         let ball = document.createElement('div')
         ball.className = 'ball'
         ball.style.backgroundColor = this.colors[colorNum]
 
         ball.onclick = () => {
-            if (this.ballIsNotBlocked(x, y)) {
+            if (Board.isBallNotBlocked(x, y, this.array)) {
                 if (!this.locker) {
                     this.startField = {x: x, y: y}
                     Utils.setBallSize(ball, 'big')
@@ -129,6 +156,9 @@ class Game {
         square.append(ball)
     }
 
+    /**
+     * creates HTML square element with all necessary mouse events
+     **/
     private createSquare(x: number, y: number): void {
         let square = document.createElement('div')
         square.id = x + 'x' + y
@@ -175,15 +205,11 @@ class Game {
         this.mainEl.append(square)
     }
 
+    /**
+     * checks if mouse position changed in relation to last mouse move
+     **/
     private doesFieldChanged(): boolean {
         return (this.currentField.x != this.lastField.x || this.currentField.y != this.lastField.y)
-    }
-
-    private ballIsNotBlocked(x: number, y: number): boolean {
-        return (x > 0 && this.array[x - 1][y] == -1) ||
-            (x < 8 && this.array[x + 1][y] == -1) ||
-            (y > 0 && this.array[x][y - 1] == -1) ||
-            (y < 8 && this.array[x][y + 1] == -1);
     }
 }
 
