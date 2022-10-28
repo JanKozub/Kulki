@@ -1,4 +1,4 @@
-import Cords from "./Cords";
+import {Cords} from "./interfaces/Cords";
 
 /**
  * Class witch contains only static methods for basic calculations or simple static elements update/replacement.

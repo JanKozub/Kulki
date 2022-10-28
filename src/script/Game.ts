@@ -1,7 +1,7 @@
 import {Utils} from './Utils';
 import Board from "./Board";
 import Striker from "./Striker";
-import Cords from "./Cords";
+import {Cords} from "./interfaces/Cords";
 
 class Game {
     private array: number[][] = [];

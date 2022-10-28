@@ -1,7 +1,7 @@
-import Cords from "./Cords";
+import {Cords} from "./interfaces/Cords";
 import {Utils} from "./Utils";
 import Board from "./Board";
-import Color from "./Color";
+import {Color} from "./interfaces/Color";
 
 /**
  * Class witch contains only static methods for basic calculations or simple static elements update/replacement.
