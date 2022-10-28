@@ -5,7 +5,6 @@ import Cords from "./Cords";
 
 class Game {
     private array: number[][] = [];
-    private stepArr: number[][] = [];
     private readonly colors = ['white', 'black', 'red', 'yellow', 'orange', 'blue', 'pink'];
     private currentField: Cords = {x: -1, y: -1};
     private lastField: Cords = {x: 0, y: 0};
@@ -16,14 +15,16 @@ class Game {
     private coolDown = false;
     private readonly mainEl: HTMLElement = undefined;
     private readonly striker: Striker;
+    private readonly board: Board;
 
     constructor() {
+        this.striker = new Striker();
+        this.board = new Board();
+
         this.mainEl = document.getElementById('main');
         this.nextBalls = Utils.drawBalls(3)
         this.initBoard();
         this.drawNextBalls();
-
-        this.striker = new Striker();
     }
 
     private initBoard(): void {
@@ -61,67 +62,36 @@ class Game {
     }
 
     private makeRedPath(): void {
-        if (this.doesFieldChanged()) {
-            this.noPath = false;
+        this.noPath = false;
 
-            let num = this.stepArr[this.currentField.x][this.currentField.y];
-            if (num !== -1 && num < 90) {
-                Board.clearPath();
-                Board.setFieldRed(this.currentField.x, this.currentField.y)
+        let num = this.board.getStepArray()[this.currentField.x][this.currentField.y];
+        if (num !== -1 && num < 90) {
+            this.board.clearPath();
+            this.board.setFieldRed(this.currentField.x, this.currentField.y)
 
-                let fields = this.currentField;
-                while (num > 0) {
-                    for (let i = -1; i <= 1; i++) {
-                        for (let k = -1; k <= 1; k++) {
-                            let a = fields.x - i;
-                            let b = fields.y - k;
+            let fields = this.currentField;
+            while (num > 0) {
+                for (let i = -1; i <= 1; i++) {
+                    for (let k = -1; k <= 1; k++) {
+                        let a = fields.x - i;
+                        let b = fields.y - k;
 
-                            if (a >= 0 && b >= 0 && a <= 8 && b <= 8) {
-                                if ((i == -1 && k == 0) || (i == 1 && k == 0) || (i == 0)) {
-                                    if (this.stepArr[a][b] <= num) {
-                                        num = this.stepArr[a][b];
-                                        fields = {x: a, y: b}
-                                        Board.setFieldRed(a, b)
-                                        this.noPath = false;
-                                    }
+                        if (a >= 0 && b >= 0 && a <= 8 && b <= 8) {
+                            if ((i == -1 && k == 0) || (i == 1 && k == 0) || (i == 0)) {
+                                if (this.board.getStepArray()[a][b] <= num) {
+                                    num = this.board.getStepArray()[a][b];
+                                    fields = {x: a, y: b}
+                                    this.board.setFieldRed(a, b)
+                                    this.noPath = false;
                                 }
                             }
                         }
                     }
                 }
-                this.lastField = this.currentField;
-            } else {
-                this.noPath = true;
             }
-        }
-    }
-
-    private markField(x: number, y: number): void {
-        this.stepArr[x][y] = 0;
-        let c = 0;
-        for (let n = 0; n < 81; n++) {
-            for (let a = 0; a < 9; a++) {
-                for (let b = 0; b < 9; b++) {
-                    if (this.stepArr[a][b] == c) {
-                        if (a > 0 && this.stepArr[a - 1][b] == -1) {
-                            this.stepArr[a - 1][b] = c + 1;
-                        }
-
-                        if (b > 0 && this.stepArr[a][b - 1] == -1) {
-                            this.stepArr[a][b - 1] = c + 1;
-                        }
-
-                        if (a < 8 && this.stepArr[a + 1][b] == -1) {
-                            this.stepArr[a + 1][b] = c + 1;
-                        }
-
-                        if (b < 8 && this.stepArr[a][b + 1] == -1) {
-                            this.stepArr[a][b + 1] = c + 1;
-                        }
-                    }
-                }
-            }
-            c = c + 1
+            this.lastField = this.currentField;
+        } else {
+            this.noPath = true;
         }
     }
 
@@ -135,15 +105,19 @@ class Game {
                 if (!this.locker) {
                     this.startField = {x: x, y: y}
                     Utils.setBallSize(ball, 'big')
-                    this.clearArray();
-                    this.markField(x, y);
-                    this.mainEl.onmousemove = () => this.makeRedPath()
+                    this.board.clearArray(this.array);
+                    this.board.markField(x, y);
+                    this.mainEl.onmousemove = () => {
+                        if (this.doesFieldChanged()) {
+                            this.makeRedPath()
+                        }
+                    }
                     this.locker = true;
                 } else {
                     if (this.startField.x == x && this.startField.y == y) {
                         Utils.setBallSize(ball, 'small')
                         this.mainEl.onmousemove = undefined;
-                        Board.clearPath();
+                        this.board.clearPath();
                         this.lastField = {x: 0, y: 0}
                         this.locker = false;
                     }
@@ -173,47 +147,32 @@ class Game {
                     this.lastField = {x: 0, y: 0}
 
                     this.coolDown = true;
-                    Board.setPathGray();
+                    this.board.setPathGray();
                     setTimeout(() => {
                         if (this.striker.strikeBalls(x, y, this.array) == 0) {
                             this.drawNextBalls();
                         }
 
-                        Board.clearPath()
+                        this.board.clearPath()
                         this.locker = false;
                         this.coolDown = false;
                     }, 1000)
                 }
             } else {
-                let targetBall = Board.getBallAtCords(x, y);
+                let targetBall = this.board.getBallAtCords(x, y);
                 if (targetBall !== undefined) {
-                    Board.clearPath();
-                    let startBall = Board.getBallAtCords(this.startField.x, this.startField.y);
+                    this.board.clearPath();
+                    let startBall = this.board.getBallAtCords(this.startField.x, this.startField.y);
                     Utils.setBallSize(<HTMLElement>startBall, 'small')
                     Utils.setBallSize(<HTMLElement>targetBall, 'big')
                     this.lastField = {x: 0, y: 0}
                     this.startField = {x: x, y: y}
-                    this.clearArray();
-                    this.markField(x, y);
+                    this.board.clearArray(this.array);
+                    this.board.markField(x, y);
                 }
             }
         }
         this.mainEl.append(square)
-    }
-
-    private clearArray(): void {
-        this.stepArr = []
-        for (let x = 0; x < 9; x++) {
-            let a = []
-            for (let y = 0; y < 9; y++) {
-                if (this.array[x][y] > -1) {
-                    a.push(100)
-                } else {
-                    a.push(-1)
-                }
-            }
-            this.stepArr.push(a)
-        }
     }
 
     private doesFieldChanged(): boolean {

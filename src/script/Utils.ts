@@ -2,7 +2,6 @@ import Cords from "./Cords";
 
 /**
  * Class witch contains only static methods for basic calculations or simple static elements update/replacement.
- * @model
  */
 export class Utils {
 

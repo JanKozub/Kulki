@@ -3,6 +3,9 @@ import {Utils} from "./Utils";
 import Board from "./Board";
 import Color from "./Color";
 
+/**
+ * Class witch contains only static methods for basic calculations or simple static elements update/replacement.
+ */
 export default class Striker {
     private readonly minStrikeSize = 5;
 
