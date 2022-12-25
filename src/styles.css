@@ -1,9 +1,16 @@
+#container {
+    position: absolute;
+    top: 100px;
+    right: calc(50% - 33px);
+}
+
 #main {
     width: 466px;
     height: 466px;
-    position: absolute;
+    position: relative;
     left: 200px;
     border: 1px solid black;
+    border-bottom-width: 2px;
 }
 
 .square {
